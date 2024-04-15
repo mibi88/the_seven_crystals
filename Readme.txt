@@ -1,9 +1,11 @@
 THE 7 CRYSTALS
 
-Tou explore dungeons and fight mobs, that give you xp. You will be able to use
+You explore dungeons and fight mobs, that give you xp. You will be able to use
 this XP to summon a boss that you will be able to fight and get a crystal. With
 the seven crysals you will be able to summon a big boss that lets you exit the
 dungeon.
+
+I think that it is the ugliest piece of C that I've ever written.
 
 TODO
 
