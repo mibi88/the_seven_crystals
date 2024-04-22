@@ -19,7 +19,15 @@
 
 #define MAX_LEN 16
 
-#define VERSION "v.1.0"
+#define VERSION "v.1.1"
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+EM_JS(void, play_audio, (char *file), {
+    var audio = new Audio(UTF8ToString(file));
+    audio.play();
+})
+#endif
 
 GFXSprite font;
 GFXSprite tileset1, tileset2, tileset3, tileset4, tileset5, tileset6, tileset7,
@@ -214,6 +222,8 @@ void attack(void) {
     if(n >= 0){
 #ifndef __EMSCRIPTEN__
         Mix_PlayChannel(-1, attacking, 0);
+#else
+        play_audio("wav/attack.wav");
 #endif
         mobs[n].lives -= force+0.25*((float)player.xp/100)*(rand()%2);
         mobs[n].damaged = 1;
@@ -282,20 +292,20 @@ void game_loop(void) {
                     gfx_draw_sprite_from_atlas(&slug,
                                                mobs[i].x-32-player.x+WIDTH/2,
                                                mobs[i].y-32-player.y+HEIGHT/2,
-                                               4, 3, pos, 64, 64, 0);
+                                               4, 4, pos, 64, 64, 0);
                     break;
                 case 1:
                     gfx_draw_sprite_from_atlas(&zombie,
                                                mobs[i].x-32-player.x+WIDTH/2,
                                                mobs[i].y-32-player.y+HEIGHT/2,
-                                               4, 3, pos,
+                                               4, 4, pos,
                                                64, 64, 0);
                     break;
                 case 2:
                     gfx_draw_sprite_from_atlas(&cannon,
                                                mobs[i].x-32-player.x+WIDTH/2,
                                                mobs[i].y-32-player.y+HEIGHT/2,
-                                               4, 3, pos, 64, 64, 0);
+                                               4, 4, pos, 64, 64, 0);
                     break;
                 case 3:
                     gfx_draw_sprite_from_atlas(&boss1_img,
@@ -308,7 +318,7 @@ void game_loop(void) {
                     gfx_draw_sprite_from_atlas(&boss2_img,
                                                mobs[i].x-128-player.x+WIDTH/2,
                                                mobs[i].y-128-player.y+HEIGHT/2,
-                                               4, 3, pos, 256, 256, 0);
+                                               4, 4, pos, 256, 256, 0);
                    break;
                case 5:
                     gfx_draw_sprite_from_atlas(&boss3_img,
@@ -372,6 +382,8 @@ void game_loop(void) {
                 if(player.knockback_force <= 0){
 #ifndef __EMSCRIPTEN__
                     Mix_PlayChannel(-1, hurts, 0);
+#else
+                    play_audio("wav/hurts.wav");
 #endif
                     player.knockback_force = 800;
                     switch(mobs[i].type){
@@ -413,6 +425,8 @@ void game_loop(void) {
             if(process_bullet(&bullets[n], &mobs[i], &player, delta)){
 #ifndef __EMSCRIPTEN__
                 Mix_PlayChannel(-1, hurts, 0);
+#else
+                play_audio("wav/hurts.wav");
 #endif
                 player.lives -= 2-(0.25*((float)player.xp/100)*(rand()%2));
                 player.damaged = 1;
@@ -434,10 +448,10 @@ void game_loop(void) {
         player_img.color = white;
     }
     if(player.left || player.right || player.up || player.down){
-        gfx_draw_sprite_from_atlas(&player_img, WIDTH/2-32, HEIGHT/2-32, 4, 3,
+        gfx_draw_sprite_from_atlas(&player_img, WIDTH/2-32, HEIGHT/2-32, 4, 4,
                                    player.facing+4*(frame%2+1), 64, 64, 0);
     }else{
-        gfx_draw_sprite_from_atlas(&player_img, WIDTH/2-32, HEIGHT/2-32, 4, 3,
+        gfx_draw_sprite_from_atlas(&player_img, WIDTH/2-32, HEIGHT/2-32, 4, 4,
                                    player.facing, 64, 64, 0);
     }
     gfx_draw_string(&font, info_str, 0, 0, 16, 16);
@@ -583,6 +597,8 @@ void game_loop(void) {
                             bossfight = 0;
 #ifndef __EMSCRIPTEN__
                             Mix_PlayChannel(-1, grab, 0);
+#else
+                            play_audio("wav/grab.wav");
 #endif
                             tilemap_replace(&dungeon.levels[map_n].tilemap, 4,
                                             1);
@@ -621,6 +637,8 @@ void game_loop(void) {
                                 crystals--;
 #ifndef __EMSCRIPTEN__
                                 Mix_PlayChannel(-1, place, 0);
+#else
+                                play_audio("wav/place.wav");
 #endif
                             }
                             if(tilemap_count_tiles(
@@ -656,6 +674,8 @@ void game_loop(void) {
         if(player.left || player.right || player.up || player.down){
 #ifndef __EMSCRIPTEN__
             Mix_PlayChannel(-1, step, 0);
+#else
+            play_audio("wav/step.wav");
 #endif
         }
         last_step = SDL_GetTicks();
