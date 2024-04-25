@@ -19,7 +19,7 @@
 
 #define MAX_LEN 16
 
-#define VERSION "v.1.1"
+#define VERSION "v.1.2"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -155,6 +155,9 @@ void reset(void) {
     
     for(i=0;i<MOBS_MAX;i++){
         mobs[i].lives = 0;
+    }
+    for(i=0;i<BULLET_MAX;i++){
+        bullets[i].exists = 0;
     }
     
     player = base_player;
@@ -604,6 +607,12 @@ void game_loop(void) {
                                             1);
                             crystals++;
                             map_n++;
+                            for(i=0;i<MOBS_MAX;i++){
+                                mobs[i].lives = 0;
+                            }
+                            for(i=0;i<BULLET_MAX;i++){
+                                bullets[i].exists = 0;
+                            }
                             switch(map_n){
                                 case 1:
                                     mob_limit = 2;
@@ -690,7 +699,8 @@ void game_loop(void) {
         player.damaged = 0;
         for(i=0;i<MOBS_MAX;i++){
             mobs[i].damaged = 0;
-            if(mobs[i].type == 2 && rand()%100 > SHOOT_FREQUENCY){
+            if(mobs[i].type == 2 && rand()%100 > SHOOT_FREQUENCY &&
+               mobs[i].lives >= 0){
                 for(n=0;n<BULLET_MAX;n++){
                     if(!bullets[n].exists){
                         spawn_bullet(&bullets[n], &mobs[i], &player);
