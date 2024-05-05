@@ -1,7 +1,4 @@
-main
-index.html
-*.out
-*.exe
-*.data
-*.wasm
-*.js
+.cproject
+.project
+/.settings/
+/build/

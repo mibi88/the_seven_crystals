@@ -27,6 +27,7 @@ typedef struct {
     GFXColor color; /* Because I'm using GL_MODULATE */
 } GFXSprite;
 
+void gfx_play_audio(char *file);
 void gfx_draw_string(GFXSprite *font, char *str, int sx, int sy, int font_w,
                      int font_h);
 void gfx_draw_char(GFXSprite *font, char c, int x, int y, int font_w,

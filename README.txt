@@ -7,6 +7,23 @@ dungeon.
 
 I think that it is the ugliest piece of C that I've ever written.
 
+DEPENDENCIES
+
+When building for Linux
+
+* m
+* SDL
+* SDL_Image
+* SDL_mixer
+* GL
+* GLU
+
+When building the web version
+
+* emsdk
+
+BUILDING
+
 TODO
 
 * Rendering                                   - done
@@ -42,6 +59,7 @@ TODO
 * Add lighting to the tilemap                 - done
 * Add some animations                         - partially done
 * Add some powerups ?                         - to do
-* Add some sound effects ?                    - to do
-* Optimization & cleanup ?                    - to do
+* Add some sound effects                      - done
+* Cleanup                                     - to do
+* Optimization                                - to do
 

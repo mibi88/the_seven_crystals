@@ -6,6 +6,25 @@ void gfx_clear(void) {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+#ifdef __EMSCRIPTEN__
+EM_JS(void, gfx_play_audio, (char *file), {
+    var audio = new Audio(UTF8ToString(file));
+    audio.play();
+})
+#else
+/* TODO: Do not always reload the wav file */
+void gfx_play_audio(char *file) {
+    /* TODO: Get sound working again! */
+    Mix_Chunk *sound = Mix_LoadWAV(file);
+    if(sound){
+        Mix_PlayChannel(-1, sound, 0);
+        Mix_FreeChunk(sound);
+    }else{
+        puts("Failed to load a sound");
+    }
+}
+#endif
+
 void gfx_draw_string(GFXSprite *font, char *str, int sx, int sy, int font_w,
                      int font_h) {
     int x = sx, y = sy;
