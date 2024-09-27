@@ -57,11 +57,11 @@ void gfx_draw_sprite_from_atlas(GFXSprite *sprite, int x, int y, int w, int h,
     float step_x = 1.0/w;
     float step_y = 1.0/h;
     
-    float x1 = atlas_x*step_x;
-    float y1 = atlas_y*step_y;
+    float x1 = atlas_x*step_x/sprite->data_width*sprite->width;
+    float y1 = atlas_y*step_y/sprite->data_height*sprite->height;
     
-    float x2 = x1+step_x;
-    float y2 = y1+step_y;
+    float x2 = (x1+step_x)/sprite->data_width*sprite->width;
+    float y2 = (y1+step_y)/sprite->data_height*sprite->height;
     
     if(!group){
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -136,7 +136,7 @@ void gfx_draw_sprite(GFXSprite *sprite, int x, int y) {
     glDisable(GL_TEXTURE);
 }
 
-GFXSprite gfx_load_texture(char *file) {
+GFXSprite gfx_load_texture(char *file, int real_w, int real_h) {
     unsigned int id = 0;
     SDL_Surface *image;
     GFXSprite sprite;
@@ -154,14 +154,17 @@ GFXSprite gfx_load_texture(char *file) {
     image = IMG_Load(file);
     if(!image){
         puts("Failed to load texture!");
+        SDL_Quit();
         exit(EXIT_FAILURE);
     }
     
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, image->pixels);
     
-    sprite.width = image->w;
-    sprite.height = image->h;
+    sprite.data_width = image->w;
+    sprite.data_height = image->h;
+    sprite.width = real_w;
+    sprite.height = real_h;
     sprite.texture = id;
     sprite.color = default_color;
     

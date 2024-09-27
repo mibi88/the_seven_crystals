@@ -9,5 +9,6 @@
 
 void boss_spawn(Data *data, Entity *player);
 void handle_bossfight(Data *data, Entity *player);
+void spawn_enemies(Data *data, Entity *player);
 
 #endif

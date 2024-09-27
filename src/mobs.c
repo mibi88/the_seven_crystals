@@ -1,5 +1,20 @@
 #include <mobs.h>
 
+void spawn_mobs(Data *data, Entity *player) {
+    int x, y, i;
+    for(y=-256;y<256;y++){
+        for(x=-256;x<256;x++){
+            for(i=0;i<data->mob_num_limit;i++){
+                if(mob_update(&data->mobs[i], player,
+                              &data->dungeon.levels[data->map_n].tilemap, data,
+                              x, y)){
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void mob_attack(Entity *mob, Entity *player, Tilemap *tilemap, Data *data,
                 double delta) {
     player->damaged = 1;
@@ -55,104 +70,29 @@ void mob_move(Entity *mob, Entity *player, Tilemap *tilemap, double delta) {
 void mob_draw(Entity *mob, Entity *player, Data *data, int frame, int frame2) {
     const GFXColor red = {1.0, 0.5, 0.5};
     const GFXColor white = {1.0, 1.0, 1.0};
+    GFXSprite *mobs[] = {
+        &data->slug,
+        &data->zombie,
+        &data->cannon,
+        &data->boss1_img,
+        &data->boss2_img,
+        &data->boss3_img,
+        &data->boss4_img,
+        &data->boss5_img,
+        &data->boss6_img,
+        &data->boss7_img,
+        &data->megaboss_img
+    };
     int pos;
-    if(mob->damaged){
-        data->slug.color = red;
-        data->zombie.color = red;
-        data->cannon.color = red;
-        data->boss1_img.color = red;
-        data->boss2_img.color = red;
-        data->boss3_img.color = red;
-        data->boss4_img.color = red;
-        data->boss5_img.color = red;
-        data->boss6_img.color = red;
-        data->boss7_img.color = red;
-        data->megaboss_img.color = red;
-    }else{
-       data->slug.color = white;
-        data->zombie.color = white;
-        data->cannon.color = white;
-        data->boss1_img.color = white;
-        data->boss2_img.color = white;
-        data->boss3_img.color = white;
-        data->boss4_img.color = white;
-        data->boss5_img.color = white;
-        data->boss6_img.color = white;
-        data->boss7_img.color = white;
-        data->megaboss_img.color = white;
-    }
+    mobs[mob->type]->color = mob->damaged ? red : white;
     pos = mob->facing%D_AMOUNT+4*(frame%2+1);
-    switch(mob->type){
-        case 0:
-            pos = mob->facing%D_AMOUNT+4*frame2;
-            gfx_draw_sprite_from_atlas(&data->slug,
-                                       mob->x-32-player->x+WIDTH/2,
-                                       mob->y-32-player->y+HEIGHT/2,
-                                       4, 4, pos, 64, 64, 0);
-            break;
-        case 1:
-            gfx_draw_sprite_from_atlas(&data->zombie,
-                                       mob->x-32-player->x+WIDTH/2,
-                                       mob->y-32-player->y+HEIGHT/2,
-                                       4, 4, pos,
-                                       64, 64, 0);
-            break;
-        case 2:
-            gfx_draw_sprite_from_atlas(&data->cannon,
-                                       mob->x-32-player->x+WIDTH/2,
-                                       mob->y-32-player->y+HEIGHT/2,
-                                       4, 4, pos, 64, 64, 0);
-            break;
-        case 3:
-            gfx_draw_sprite_from_atlas(&data->boss1_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       4, 4, mob->facing+frame*4,
-                                       256, 256, 0);
-           break;
-       case 4:
-            gfx_draw_sprite_from_atlas(&data->boss2_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       4, 4, pos, 256, 256, 0);
-           break;
-       case 5:
-            gfx_draw_sprite_from_atlas(&data->boss3_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0);
-           break;
-       case 6:
-            gfx_draw_sprite_from_atlas(&data->boss4_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0);
-           break;
-       case 7:
-            gfx_draw_sprite_from_atlas(&data->boss5_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0);
-           break;
-       case 8:
-            gfx_draw_sprite_from_atlas(&data->boss6_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0);
-           break;
-       case 9:
-            gfx_draw_sprite_from_atlas(&data->boss7_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0);
-           break;
-       case 10:
-            gfx_draw_sprite_from_atlas(&data->megaboss_img,
-                                       mob->x-128-player->x+WIDTH/2,
-                                       mob->y-128-player->y+HEIGHT/2,
-                                       1, 1, 0, 256, 256, 0); 
-           break;
-    }
+    gfx_draw_sprite_from_atlas(mobs[mob->type],
+                               mob->x-mobs[mob->type]->width/2-player->x+
+                                                               WIDTH/2,
+                               mob->y-mobs[mob->type]->height/2-player->y+
+                                                                HEIGHT/2,
+                               4, 4, pos, mobs[mob->type]->width,
+                               mobs[mob->type]->height, 0);
 }
 
 int mob_update(Entity *mob, Entity *player, Tilemap *tilemap, Data *data, int x,

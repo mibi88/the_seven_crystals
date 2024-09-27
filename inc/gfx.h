@@ -23,6 +23,8 @@ typedef struct {
 typedef struct {
     int width;
     int height;
+    int data_width;
+    int data_height;
     unsigned int texture;
     GFXColor color; /* Because I'm using GL_MODULATE */
 } GFXSprite;
@@ -36,7 +38,7 @@ void gfx_quit(void);
 void gfx_draw_sprite_from_atlas(GFXSprite *sprite, int x, int y, int w, int h,
                                 int i, int render_w, int render_h, int group);
 void gfx_draw_sprite(GFXSprite *sprite, int x, int y);
-GFXSprite gfx_load_texture(char *file);
+GFXSprite gfx_load_texture(char *file, int real_w, int real_h);
 void gfx_init(int vsync);
 void gfx_mainloop(void loop(void));
 void gfx_clear(void);

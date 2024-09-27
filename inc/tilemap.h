@@ -10,8 +10,9 @@
 
 #define LIGHT_LEVELS 10
 #define PLAYER_LIGHT 7
+#define MIN_LIGHT    26
 
-#define LIGHT_TILES 1
+#define LIGHT_TILES 3
 
 #include <gfx.h>
 

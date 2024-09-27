@@ -9,12 +9,17 @@ the_seven_crystals_sources = [
   'player.c',
   'mobs.c',
   'data.c',
-  'data.c',
+  'title.c',
+  'game.c',
+  'game_over.c',
+  'win.c',
+  'pause.c',
 ]
 
 the_seven_crystals_assets = [
   # Images
   'img/font.png',
+  'img/title.png',
   'img/tileset1.png',
   'img/tileset2.png',
   'img/tileset3.png',
@@ -54,6 +59,7 @@ if ['emcc', 'emscripten'].contains(meson.get_compiler('c').get_id())
     '-sGL_FFP_ONLY',
     '-sGL_UNSAFE_OPTS=0',
     '--use-preload-plugins',
+    '-sSTACK_SIZE=524288',
   ]
   foreach asset : the_seven_crystals_assets
     extra_args += '--preload-file'

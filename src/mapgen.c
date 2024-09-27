@@ -138,8 +138,8 @@ void generate_level_tilemap(Level *level) {
     level->tilemap.data = level->tiles;
 }
 
-const unsigned char light_tiles[LIGHT_TILES] = {10};
-const unsigned char light_strength[LIGHT_TILES] = {5};
+const unsigned char light_tiles[LIGHT_TILES] = {10, 11, 12};
+const unsigned char light_strength[LIGHT_TILES] = {5, 6, 6};
 
 void generate_level_lighting(Level *level){
     int x, y, i;
@@ -178,7 +178,8 @@ void generate_level_lighting(Level *level){
             if(brightness >= LIGHT_LEVELS){
                 brightness = LIGHT_LEVELS-1;
             }
-            level->light[y*(LEVEL_W*ROOM_W)+x] = (unsigned char)brightness;
+            level->light[y*(LEVEL_W*ROOM_W)+x] = 255.0/LIGHT_LEVELS*
+                                                 brightness;
         }
     }
     level->tilemap.light = level->light;

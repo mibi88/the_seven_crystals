@@ -21,7 +21,7 @@ void tilemap_render(Tilemap *tilemap, GFXSprite *tiles, int sx, int sy) {
     int dx = ((-sx)%TILE_W)-TILE_W;
     int dy = (-sy%TILE_H)-TILE_H;
     int x, y, gx, gy;
-    unsigned char light;
+    unsigned int light;
     float distance;
     
     /* TODO: Use vertex arrays */
@@ -36,16 +36,18 @@ void tilemap_render(Tilemap *tilemap, GFXSprite *tiles, int sx, int sy) {
                gy < tilemap->height){
                 light = tilemap->light[gy*tilemap->width+gx];
                 distance = sqrt((x-DRAWING_W/2)*(x-DRAWING_W/2)+
-                                (y-DRAWING_H/2+1)*(y-DRAWING_H/2+1));
+                                (y-DRAWING_H/2)*(y-DRAWING_H/2));
                 if(distance > PLAYER_LIGHT){
                     distance = PLAYER_LIGHT;
                 }
                 distance = PLAYER_LIGHT-distance;
-                light += (unsigned char)distance;
-                if(light >= LIGHT_LEVELS){
-                    light = LIGHT_LEVELS-1;
+                light += 255.0/LIGHT_LEVELS*distance;
+                if(light < MIN_LIGHT){
+                    light = MIN_LIGHT;
                 }
-                tiles->color = light_levels[light];
+                tiles->color.r = light/255.0;
+                tiles->color.g = light/255.0;
+                tiles->color.b = (light-MIN_LIGHT)/255.0;
                 gfx_draw_sprite_from_atlas(tiles, dx+x*TILE_W, dy+y*TILE_H,
                                            ATLAS_W, ATLAS_H,
                                            tilemap->data[gy*tilemap->width+gx],
